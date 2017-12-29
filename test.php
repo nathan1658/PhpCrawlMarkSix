@@ -21,8 +21,7 @@ $dom = new DOMDocument();
 @$dom->loadHTML($temp);
 $xpath = new DOMXPath($dom);
 $xpathResult = $xpath->evaluate("//*[@id='oddsTable']/table/tr[3]/td/table/tr[2]/td/table/tr/td[1]/table/tr[2]/td/table/tr");
-$result = [];
-result(1)="sad";
+
 foreach ($xpathResult as $node) {
     $result[] = $dom->saveHTML($node);
 }
