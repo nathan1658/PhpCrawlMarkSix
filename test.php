@@ -1,30 +1,27 @@
 <?
+//header("Content-type: text/plain");
 
-define("MARKSIXURL","http://bet.hkjc.com/marksix/index.aspx?lang=ch");
+header('charset=utf-8');
 
-// 建立CURL連線
-$ch = curl_init();
 
-// 設定擷取的URL網址
-curl_setopt($ch, CURLOPT_URL, constant("MARKSIXURL"));
-curl_setopt($ch, CURLOPT_HEADER, false);
-//將curl_exec()獲取的訊息以文件流的形式返回，而不是直接輸出。
-curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
-curl_setopt($ch, CURLOPT_ENCODING, 'gzip');
-// 執行
-$temp=curl_exec($ch);
-curl_close($ch);
-
-//echo $temp;
+libxml_use_internal_errors(true);
+$html = file_get_contents("http://bet.hkjc.com/marksix/index.aspx?lang=ch");
+$html=preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', "", $html);
 $dom = new DOMDocument();
-//從一個字符串加載HTML
-@$dom->loadHTML($temp);
-$xpath = new DOMXPath($dom);
-$xpathResult = $xpath->evaluate("//*[@id='oddsTable']/table/tr[3]/td/table/tr[2]/td/table/tr/td[1]/table/tr[2]/td/table/tr");
-Diu
-foreach ($xpathResult as $node) {
-    $result[] = $dom->saveHTML($node);
-}
-print_r($result);
+$dom->loadHtml($html);
+$xpath = new DOMXpath($dom);
 
+$xpathResult = $xpath->evaluate('//*[@id="oddsTable"]/table/tr[3]/td/table/tr[2]/td/table');
+$mainDiv = $xpathResult->item(0);
+$numberTable = $xpath->evaluate('tr/td/table/tr',$mainDiv);
+$num =lala('td[1]',$numberTable,$xpath);
+$date = lala('td[2]',$numberTable,$xpath);
+echo $num;
+echo '<br/>';
+echo $date;
+
+function lala($path,$source,$xpath)
+{
+    return $xpath->evaluate($path,$source->item(0))->item(0)->nodeValue;
+}
 ?>
