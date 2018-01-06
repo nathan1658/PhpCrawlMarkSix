@@ -2,7 +2,6 @@
 header("Content-type: application/json;charset=utf-8");
 
 
-
 libxml_use_internal_errors(true);
 $html = file_get_contents("http://bet.hkjc.com/marksix/index.aspx?lang=ch");
 $html=preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', "", $html);
@@ -16,11 +15,7 @@ $xpathResult = $xpath->evaluate('//*[@id="oddsTable"]/table/tr[3]/td/table/tr[2]
 
 $mainDiv = $xpathResult->item(0);
 $numberTable = $xpath->evaluate('tr/td/table/tr',$mainDiv);
-// foreach($numberTable as $a)
-// {
-//      echo  $dom->saveHTML($a);
-//      echo '<br/>';
-// }
+
 //------------------------------------------------------------------------------------
 function getContentAfterColon($input)
 {
@@ -32,8 +27,6 @@ $drawNumber = getContentAfterColon(extractNodeContent('td[1]',$numberTable));
 $drawDate = getContentAfterColon(extractNodeContent('td[2]',$numberTable));
 $totalTurnover = getContentAfterColon(extractNodeContent('td[3]',$numberTable));
 
-
-
 $lastDrawResultPrizeTable = $xpath->evaluate('//*[@id="_ctl0_ContentPlaceHolder1_indexMarkSix_lastDrawResultPrizeTable"]');
 $arrayOfPrize = array();
 for($i = 0; $i<3;$i++)
@@ -44,7 +37,7 @@ for($i = 0; $i<3;$i++)
     $tmp = new LastDrawResult($tmpPrize,$tmpUnitPrize,$tmpWinningUnit);
     $arrayOfPrize[$i]=$tmp;
 }
-//print_r($arrayOfPrize);
+
 //------------------------------------------------------------------------------------
 //Obtain the number here.
 $drawResultTable = $xpath->evaluate('tr/td/table/tr[2]',$mainDiv);
@@ -61,10 +54,6 @@ $arrayResult = array("Numbers"=>$arrayOfNumbers,"DrawNumber"=>$drawNumber,"DrawD
 
 echo json_encode($arrayResult, JSON_UNESCAPED_UNICODE| JSON_UNESCAPED_SLASHES);
 
-// foreach($lastDrawResultPrizeTable as $jerjer)
-// {
-//     echo $dom->saveHTML($jerjer);
-// }
 
 function extractNodeContent($path,$source)
 {
